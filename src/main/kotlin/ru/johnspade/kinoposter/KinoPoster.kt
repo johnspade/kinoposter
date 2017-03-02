@@ -76,13 +76,19 @@ class KinoPoster(userId: Int, accessToken: String) {
 			}
 			movie.trailer?.let {
 				val saveResponse = vk.videos().save(actor).groupId(groupId).albumId(trailerAlbumId).link(it).execute()
-				try {
-					vk.upload().video(saveResponse.uploadUrl, null).execute()
-					attachments.add("video${saveResponse.ownerId}_${saveResponse.videoId}")
+				var videoAdded = false
+				for (i in 0..4) {
+					try {
+						Thread.sleep(5000)
+						vk.upload().video(saveResponse.uploadUrl, null).execute()
+						attachments.add("video${saveResponse.ownerId}_${saveResponse.videoId}")
+						videoAdded = true
+						break
+					}
+					catch (ignored: Exception) {}
 				}
-				catch (e: Exception) {
+				if (!videoAdded)
 					logger.error { "Не удалось прикрепить видео для фильма ${movie.nameRu} (${movie.id})" }
-				}
 			}
 			Post(message, attachments, dateTime)
 		}

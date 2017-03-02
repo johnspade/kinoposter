@@ -25,7 +25,7 @@ class KinopoiskClient {
 	}
 
 	fun getStill(url: URL): Optional<BufferedImage> {
-		(0..3).forEach {
+		(0..2).forEach {
 			try {
 				val image = ImageIO.read(url)
 				return Optional.ofNullable(image)
