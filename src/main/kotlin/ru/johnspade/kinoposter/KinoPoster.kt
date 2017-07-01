@@ -33,24 +33,24 @@ class KinoPoster(userId: Int, accessToken: String) {
 		getResponse = wallGetQuery.filter(WallGetFilter.OWNER).count(1).execute()
 		getResponse.items.firstOrNull()?.let { lastDateTime = getMaxDate(it.date, lastDateTime) }
 		var dateTime: LocalDateTime
-		movies.mapTo(posts) { movie ->
+		movies.mapTo(posts) { (id, nameRu, nameEn, year, country, genre, description, director, actors, stills, trailer) ->
 			dateTime = getNextDateTime(lastDateTime)
 			lastDateTime = dateTime
-			val rating = kinopoiskClient.getRating(movie.id)
+			val rating = kinopoiskClient.getRating(id)
 			val message = """
-				|${movie.nameRu} ${movie.nameEn?.let { "($it)" }?: ""}
+				|$nameRu ${nameEn?.let { "($it)" }?: ""}
 				|
-				|Жанр: ${movie.genre.map { "#$it" }.joinToString(", ")}
-				|Год: ${movie.year}
-				|Страна: ${movie.country}
-				|Режиссер: ${movie.director}
-				|В главных ролях: ${movie.actors.take(4).joinToString(", ")}
+				|Жанр: ${genre.map { "#$it" }.joinToString(", ")}
+				|Год: $year
+				|Страна: $country
+				|Режиссер: $director
+				|В главных ролях: ${actors.take(4).joinToString(", ")}
 				|Оценка на Кинопоиске: ${rating.kp_rating}${rating.imdb_rating?.let { "\nОценка на IMDb: $it" }?: ""}
 				|
-				|${movie.description}
+				|$description
 			""".trimMargin()
-			val attachments = mutableListOf("https://www.kinopoisk.ru/film/${movie.id}")
-			val links = listOf("https://st.kp.yandex.net/images/film_big/${movie.id}.jpg") + movie.stills.take(4)
+			val attachments = mutableListOf("https://www.kinopoisk.ru/film/$id")
+			val links = listOf("https://st.kp.yandex.net/images/film_big/$id.jpg") + stills.take(4)
 			val serverResponse = vk.photos().getWallUploadServer(actor).groupId(groupId).execute()
 			links.forEach {
 				val url = URL(it)
@@ -74,7 +74,7 @@ class KinoPoster(userId: Int, accessToken: String) {
 				else
 					throw RuntimeException("Не удалось загрузить изображение $it")
 			}
-			movie.trailer?.let {
+			trailer?.let {
 				val saveResponse = vk.videos().save(actor).groupId(groupId).albumId(trailerAlbumId).link(it).execute()
 				var videoAdded = false
 				for (i in 0..4) {
@@ -88,7 +88,7 @@ class KinoPoster(userId: Int, accessToken: String) {
 					catch (ignored: Exception) {}
 				}
 				if (!videoAdded)
-					logger.error { "Не удалось прикрепить видео для фильма ${movie.nameRu} (${movie.id})" }
+					logger.error { "Не удалось прикрепить видео для фильма $nameRu ($id)" }
 			}
 			Post(message, attachments, dateTime)
 		}

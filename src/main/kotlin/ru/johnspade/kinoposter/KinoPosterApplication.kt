@@ -1,44 +1,59 @@
 package ru.johnspade.kinoposter
 
+import com.natpryce.konfig.ConfigurationProperties
+import com.natpryce.konfig.PropertyGroup
+import com.natpryce.konfig.getValue
+import com.natpryce.konfig.intType
+import com.natpryce.konfig.stringType
 import mu.KLogging
-import us.jimschubert.kopper.Parser
+import java.io.File
 
 fun main(args: Array<String>) {
 	try {
-		KinoPosterApplication().run(args)
+		KinoPosterApplication().run()
 	}
 	catch(e: Exception) {
 		KinoPosterApplication.logger.error(e.message, e)
 	}
 }
 
+object app : PropertyGroup() {
+	val database by stringType
+	val moviesCount by intType
+}
+
+object vk : PropertyGroup() {
+	val groupId by intType
+	val accessToken by stringType
+	val trailerAlbumId by intType
+	val userId by intType
+}
+
+object telegram : PropertyGroup() {
+	val botToken by stringType
+	val chatId by stringType
+}
+
 class KinoPosterApplication {
 
 	companion object: KLogging()
 
-	private val databaseArg = "d"
-	private val tokenArg = "t"
-	private val moviesCountArg = "m"
-	private val groupIdArg = "g"
-	private val trailerAlbumIdArg = "a"
-	private val userIdArg = "u"
-
-	fun run(args: Array<String>) {
-		val arguments = Parser().option(databaseArg).option(tokenArg).option(moviesCountArg).option(groupIdArg)
-				.option(trailerAlbumIdArg).option(userIdArg).parse(args)
-		val database = arguments.option(databaseArg)!!
-		val moviesCount = arguments.option(moviesCountArg)!!.toInt()
-		val accessToken = arguments.option(tokenArg)!!
-		val groupId = arguments.option(groupIdArg)!!.toInt()
-		val trailerAlbumId = arguments.option(trailerAlbumIdArg)!!.toInt()
-		val userId = arguments.option(userIdArg)!!.toInt()
-		logger.info { "Заданное количество фильмов: $moviesCount" }
-		val databaseConnector = DatabaseConnector(database)
-		val movies = databaseConnector.getMovies(moviesCount)
-		logger.info { "Выбранные фильмы: ${movies.joinToString(", ") { "${it.nameRu} (${it.id})" } }" }
-		KinoPoster(userId, accessToken).post(movies, groupId, trailerAlbumId)
+	fun run() {
+		val config = ConfigurationProperties.fromFile(File("config.properties"))
+		logger.info { "Заданное количество фильмов: ${config[app.moviesCount]}" }
+		val databaseConnector = DatabaseConnector(config[app.database])
+		val movies = databaseConnector.getMovies(config[app.moviesCount])
+		logger.info { "Выбранные фильмы: ${movies.joinToString(", ") { "${it.nameRu} (${it.id})" }}" }
+		KinoPoster(config[vk.userId], config[vk.accessToken]).post(movies, config[vk.groupId], config[vk.trailerAlbumId])
 		databaseConnector.markPostedMovies(movies)
 		logger.info("Фильмы отмечены как опубликованные")
+		TelegramClient().sendNotification(
+				"bot${config[telegram.botToken]}",
+				config[telegram.chatId],
+				"В Кинопостере опубликованы фильмы ${movies.joinToString(", ") {
+					"[${it.nameRu}](https://www.kinopoisk.ru/film/${it.id})"
+				}}"
+		)
 	}
 
 }

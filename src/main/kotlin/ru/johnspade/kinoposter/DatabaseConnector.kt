@@ -20,7 +20,7 @@ class DatabaseConnector(private val database: String) {
 			val sql = """select id, name_ru, name_en, year, country, genre, description, director, actors, stills, trailer
 			from good_movies order by random() limit $count;"""
 			val statement = conn.createStatement()
-			statement.use { statement ->
+			statement.use {
 				val resultSet = statement.executeQuery(sql)
 				while (resultSet.next()) {
 					@Suppress("UNCHECKED_CAST")
