@@ -72,7 +72,7 @@ class KinoPoster(userId: Int, accessToken: String) {
 					}
 				}
 				else
-					throw RuntimeException("Не удалось загрузить изображение $it")
+					logger.error { "Не удалось загрузить изображение $it" }
 			}
 			trailer?.let {
 				val saveResponse = vk.videos().save(actor).groupId(groupId).albumId(trailerAlbumId).link(it).execute()
