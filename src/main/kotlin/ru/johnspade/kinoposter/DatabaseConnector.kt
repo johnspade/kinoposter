@@ -47,13 +47,10 @@ class DatabaseConnector(private val database: String) {
 	fun markPostedMovies(movies: List<Movie>) {
 		val connection = DriverManager.getConnection("jdbc:postgresql:$database")
 		connection.use {
-			val statement = connection.prepareStatement("update good_movies set posted = true where id = ?")
+			val statement = connection.prepareStatement("update good_movies set posted = true where id = any(?)")
 			statement.use {
-				movies.forEach {
-					statement.setLong(1, it.id)
-					statement.addBatch()
-				}
-				statement.executeBatch()
+				statement.setArray(1, connection.createArrayOf("bigint", movies.map { it.id }.toTypedArray()))
+				statement.executeUpdate()
 			}
 		}
 	}
