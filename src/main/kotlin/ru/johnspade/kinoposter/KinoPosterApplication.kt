@@ -29,11 +29,6 @@ object vk : PropertyGroup() {
 	val userId by intType
 }
 
-object telegram : PropertyGroup() {
-	val botToken by stringType
-	val chatId by stringType
-}
-
 class KinoPosterApplication {
 
 	companion object: KLogging()
