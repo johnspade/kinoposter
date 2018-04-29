@@ -40,7 +40,7 @@ class KinoPoster(userId: Int, accessToken: String) {
 			val message = """
 				|$nameRu ${nameEn?.let { "($it)" }?: ""}
 				|
-				|Жанр: ${genre.map { "#$it" }.joinToString(", ")}
+				|Жанр: ${genre.joinToString(", ") { "#$it" }}
 				|Год: $year
 				|Страна: $country
 				|Режиссер: $director

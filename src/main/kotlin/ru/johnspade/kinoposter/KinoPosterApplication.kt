@@ -47,13 +47,6 @@ class KinoPosterApplication {
 		KinoPoster(config[vk.userId], config[vk.accessToken]).post(movies, config[vk.groupId], config[vk.trailerAlbumId])
 		databaseConnector.markPostedMovies(movies)
 		logger.info("Фильмы отмечены как опубликованные")
-		TelegramClient().sendNotification(
-				"bot${config[telegram.botToken]}",
-				config[telegram.chatId],
-				"В Кинопостере опубликованы фильмы ${movies.joinToString(", ") {
-					"[${it.nameRu}](https://www.kinopoisk.ru/film/${it.id})"
-				}}"
-		)
 	}
 
 }
