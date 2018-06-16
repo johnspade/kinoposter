@@ -24,7 +24,7 @@ class KinoPoster(userId: Int, accessToken: String) {
 	private val actor = UserActor(userId, accessToken)
 	private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm")
 
-	fun post(movies: List<Movie>, groupId: Int, trailerAlbumId: Int) {
+	fun post(movies: List<Movie>, groupId: Int) {
 		val posts = mutableListOf<Post>()
 		var lastDateTime = LocalDateTime.now()
 		val wallGetQuery = vk.wall().get(actor).ownerId(-groupId)
@@ -75,7 +75,7 @@ class KinoPoster(userId: Int, accessToken: String) {
 					logger.error { "Не удалось загрузить изображение $it" }
 			}
 			trailer?.let {
-				val saveResponse = vk.videos().save(actor).groupId(groupId).albumId(trailerAlbumId).link(it).execute()
+				val saveResponse = vk.videos().save(actor).groupId(groupId).link(it).execute()
 				var videoAdded = false
 				for (i in 0..4) {
 					try {
