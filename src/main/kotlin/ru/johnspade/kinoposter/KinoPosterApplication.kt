@@ -12,17 +12,17 @@ fun main(args: Array<String>) {
 	try {
 		KinoPosterApplication().run()
 	}
-	catch(e: Exception) {
+	catch (e: Exception) {
 		KinoPosterApplication.logger.error(e.message, e)
 	}
 }
 
-object App : PropertyGroup() {
+object App: PropertyGroup() {
 	val database by stringType
 	val moviesCount by intType
 }
 
-object Vk : PropertyGroup() {
+object Vk: PropertyGroup() {
 	val groupId by intType
 	val accessToken by stringType
 	val userId by intType
