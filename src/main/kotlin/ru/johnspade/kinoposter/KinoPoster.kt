@@ -75,7 +75,7 @@ class KinoPoster(userId: Int, accessToken: String) {
 					logger.error { "Не удалось загрузить изображение $it" }
 			}
 			trailer?.let {
-				val saveResponse = vk.videos().save(actor).groupId(groupId).link(it).execute()
+				val saveResponse = vk.videos().save(actor).groupId(groupId).noComments(true).link(it).execute()
 				var videoAdded = false
 				for (i in 0..4) {
 					try {
@@ -100,7 +100,7 @@ class KinoPoster(userId: Int, accessToken: String) {
 		val queries = posts.map {
 			vk.wall().post(actor)
 					.ownerId(-groupId)
-					.message(it.message.replace("\n", "\\n").replace("\r", "\\r"))
+					.message(it.message)
 					.attachments(it.attachments)
 					.publishDate(it.dateTime.atZone(ZoneId.systemDefault()).toEpochSecond().toInt())
 					.fromGroup(true)

@@ -1,6 +1,5 @@
 package ru.johnspade.kinoposter
 
-import kotlinx.support.jdk7.use
 import java.sql.DriverManager
 
 data class Movie(

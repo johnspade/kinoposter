@@ -13,15 +13,9 @@
 	<version>0.0.1</version>
 
 	<properties>
-		<kotlin.version>1.2.50</kotlin.version>
+		<kotlin.version>1.2.51</kotlin.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
-	<repositories>
-		<repository>
-			<id>jcenter</id>
-			<url>http://jcenter.bintray.com/</url>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -31,23 +25,18 @@
 		</dependency>
 		<dependency>
 			<groupId>org.jetbrains.kotlin</groupId>
-			<artifactId>kotlin-reflect</artifactId>
+			<artifactId>kotlin-stdlib-jdk8</artifactId>
 			<version>${kotlin.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.vk.api</groupId>
 			<artifactId>sdk</artifactId>
-			<version>0.4.3</version>
+			<version>0.5.12</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<version>9.4.1212</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jetbrains.kotlinx</groupId>
-			<artifactId>kotlinx-support-jdk8</artifactId>
-			<version>0.3</version>
 		</dependency>
 		<dependency>
 			<groupId>com.squareup.okhttp</groupId>
@@ -73,11 +62,6 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.22</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>1.1.10</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>

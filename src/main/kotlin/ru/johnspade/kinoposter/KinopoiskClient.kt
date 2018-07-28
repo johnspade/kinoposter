@@ -5,10 +5,9 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.squareup.okhttp.HttpUrl
 import com.squareup.okhttp.OkHttpClient
 import com.squareup.okhttp.Request
-import kotlinx.support.jdk7.use
 import java.awt.image.BufferedImage
 import java.net.URL
-import java.util.*
+import java.util.Optional
 import javax.imageio.ImageIO
 
 class KinopoiskClient {
